@@ -227,7 +227,7 @@
                         <artifactItem>
                             <groupId>org.codelibs.elasticsearch.module</groupId>
                             <artifactId>lang-painless</artifactId>
-                            <version>5.5.0</version>
+                            <version>${elasticsearch.version}</version>
                             <type>jar</type>
                             <overWrite>false</overWrite>
                             <outputDirectory>${project.build.directory}/es/modules/lang-painless</outputDirectory>
