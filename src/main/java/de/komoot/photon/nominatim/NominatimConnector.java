@@ -237,7 +237,7 @@ public class NominatimConnector {
         BasicDataSource dataSource = buildDataSource(host, port, database, username, password, false);
 
         template = new JdbcTemplate(dataSource);
-        template.setFetchSize(100000);
+        template.setFetchSize(10000);
     }
 
     static BasicDataSource buildDataSource(String host, int port, String database, String username, String password, boolean autocommit) {
