@@ -289,6 +289,9 @@ public class NominatimConnector {
         if (isPoi) {
             // need to add the term for the parent place ID itself
             terms.addAll(0, template.query("SELECT " + selectColsAddress + " FROM placex p WHERE p.place_id = ?", new Object[]{placeId}, rowMapper));
+        } else {
+            // we have to add information from current doc to have full address information (entry presented with range 0, eg. - https://nominatim.openstreetmap.org/ui/details.html?osmtype=W&osmid=334911186&class=highway)
+            terms.add(0, doc.asAddress());
         }
 
         return terms;

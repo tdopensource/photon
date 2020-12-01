@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.neovisionaries.i18n.CountryCode;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
+import de.komoot.photon.nominatim.model.AddressRow;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -199,5 +200,9 @@ public class PhotonDoc {
         }
 
         return map;
+    }
+
+    public AddressRow asAddress() {
+        return new AddressRow(getPlaceId(), getName(), getTagKey(), getTagValue(), getRankAddress());
     }
 }
