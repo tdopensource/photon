@@ -68,6 +68,9 @@ public class CommandLineArgs {
     @Parameter(names = "-cors-origin", description = "enable cross-site resource sharing for the specified origin (default CORS not supported)")
     private String corsOrigin = null;
 
+    @Parameter(names = "-disable-disc-space-checks", description = "Allows to disable disc space check, see more - https://www.elastic.co/guide/en/elasticsearch/reference/5.5/disk-allocator.html")
+    private boolean disableDiscSpaceChecks = false;
+
     @Parameter(names = "-h", description = "show help / usage")
     private boolean usage = false;
 }
