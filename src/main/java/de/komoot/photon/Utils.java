@@ -29,7 +29,8 @@ public class Utils {
                 .field(Constants.OSM_KEY, doc.getTagKey())
                 .field(Constants.OSM_VALUE, doc.getTagValue())
                 .field(Constants.OBJECT_TYPE, doc.getObjectType())
-                .field(Constants.IMPORTANCE, doc.getImportance());
+                .field(Constants.IMPORTANCE, doc.getImportance())
+                .field(Constants.OSM_RANK_ADDRESS, doc.getRankAddress());
 
         if (doc.getCentroid() != null) {
             builder.startObject("coordinate")

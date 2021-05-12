@@ -460,12 +460,20 @@ public class NominatimConnector {
      */
     private void completePlace(PhotonDoc doc) {
         final List<AddressRow> addresses = getAddresses(doc);
+        int cityNameAddressRank = -1;
         for (AddressRow address : addresses) {
             if (address.isCity()) {
-                if (doc.getCity() == null) {
-                    doc.setCity(address.getName());
+                // if we have village like Białoboki we have to take address name with biggest rank
+                // example of village - https://nominatim.openstreetmap.org/ui/details.html?osmtype=R&osmid=6778130&class=boundary - before this change we got "gmina Gać" as a result
+                if (address.getRankAddress() > cityNameAddressRank) {
+                    cityNameAddressRank = address.getRankAddress();
+                    if (doc.getCity() == null) {
+                        doc.setCity(address.getName());
+                    } else {
+                        doc.getContext().add(address.getName());
+                    }
                 } else {
-                    doc.getContext().add(address.getName());
+                    log.info("City name, used " + doc.getCity() + " instead of " + address.getName());
                 }
                 continue;
             }

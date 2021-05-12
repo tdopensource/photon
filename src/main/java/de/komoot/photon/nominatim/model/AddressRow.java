@@ -104,6 +104,7 @@ public class AddressRow {
                 .add("name", name)
                 .add("osmKey", osmKey)
                 .add("osmValue", osmValue)
+                .add("rankAddress", rankAddress)
                 .toString();
     }
 }
