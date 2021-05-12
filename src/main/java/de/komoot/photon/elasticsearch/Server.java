@@ -166,18 +166,37 @@ public class Server {
         // copy script directory to elastic search directory
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-        Files.copy(loader.getResourceAsStream("modules/lang-painless/antlr4-runtime.jar"),
-                new File(painlessDirectory, "antlr4-runtime.jar").toPath(),
-                StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(loader.getResourceAsStream("modules/lang-painless/asm-debug-all.jar"),
-                new File(painlessDirectory, "asm-debug-all.jar").toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(loader.getResourceAsStream("modules/lang-painless/lang-painless.jar"),
-                new File(painlessDirectory, "lang-painless.jar").toPath(), StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(loader.getResourceAsStream("modules/lang-painless/plugin-descriptor.properties"),
-                new File(painlessDirectory, "plugin-descriptor.properties").toPath(),
-                StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(loader.getResourceAsStream("modules/lang-painless/plugin-security.policy"),
-                new File(painlessDirectory, "plugin-security.policy").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        File antlr4File = new File(painlessDirectory, "antlr4-runtime.jar");
+        if (!antlr4File.exists()) {
+            Files.copy(loader.getResourceAsStream("modules/lang-painless/antlr4-runtime.jar"),
+                    antlr4File.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        File asmDebugAllFile = new File(painlessDirectory, "asm-debug-all.jar");
+        if (!asmDebugAllFile.exists()) {
+            Files.copy(loader.getResourceAsStream("modules/lang-painless/asm-debug-all.jar"),
+                    asmDebugAllFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        File langPainlessFile = new File(painlessDirectory, "lang-painless.jar");
+        if (!langPainlessFile.exists()) {
+            Files.copy(loader.getResourceAsStream("modules/lang-painless/lang-painless.jar"),
+                    langPainlessFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        File pluginDescriptorFile = new File(painlessDirectory, "plugin-descriptor.properties");
+        if (!pluginDescriptorFile.exists()) {
+            Files.copy(loader.getResourceAsStream("modules/lang-painless/plugin-descriptor.properties"),
+                    pluginDescriptorFile.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        File pluginSecurityFile = new File(painlessDirectory, "plugin-security.policy");
+        if (!pluginSecurityFile.exists()) {
+            Files.copy(loader.getResourceAsStream("modules/lang-painless/plugin-security.policy"),
+                    pluginSecurityFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
 
     }
 
