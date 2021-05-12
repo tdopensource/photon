@@ -63,7 +63,22 @@
 											"fuzzy_transpositions": true,
 											"lenient": false,
 											"zero_terms_query": "NONE",
-											"boost": 200.0
+											"boost": 4.0
+										}
+									}
+								},
+								{
+									"match": {
+										"name.default.raw": {
+											"query": "berlin",
+											"operator": "OR",
+											"analyzer": "search_raw",
+											"prefix_length": 0,
+											"max_expansions": 50,
+											"fuzzy_transpositions": true,
+											"lenient": false,
+											"zero_terms_query": "NONE",
+											"boost": 3.0
 										}
 									}
 								},
@@ -78,7 +93,22 @@
 											"fuzzy_transpositions": true,
 											"lenient": false,
 											"zero_terms_query": "NONE",
-											"boost": 100.0
+											"boost": 2.0
+										}
+									}
+								},
+								{
+									"match": {
+										"collector.default.raw": {
+											"query": "berlin",
+											"operator": "OR",
+											"analyzer": "search_raw",
+											"prefix_length": 0,
+											"max_expansions": 50,
+											"fuzzy_transpositions": true,
+											"lenient": false,
+											"zero_terms_query": "NONE",
+											"boost": 1.0
 										}
 									}
 								}
@@ -97,7 +127,7 @@
 							},
 							"script_score": {
 								"script": {
-									"inline": "double score = 1 + doc['importance'].value * 100; score",
+									"inline": "double score = 1 + doc['importance'].value * 10; score",
 									"lang": "painless"
 								}
 							}
@@ -146,7 +176,7 @@
 						},
 						{
 							"exists": {
-								"field": "name.en.raw",
+								"field": "name.default",
 								"boost": 1.0
 							}
 						}

@@ -21,8 +21,8 @@ public class FilteredPhotonRequest extends PhotonRequest {
     private Map<String, Set<String>> excludeTags = new HashMap<String, Set<String>>(3);
     private Map<String, Set<String>> excludeTagValues = new HashMap<String, Set<String>>(3);
 
-    FilteredPhotonRequest(String query, int limit, Envelope bbox, Point locationForBias, double locBiasScale, String language) {
-        super(query, limit, bbox, locationForBias, locBiasScale, language);
+    FilteredPhotonRequest(String query, QueryType queryType, int limit, Envelope bbox, Point locationForBias, double locBiasScale, String language) {
+        super(query, queryType, limit, bbox, locationForBias, locBiasScale, language);
     }
 
     public Set<String> keys() {

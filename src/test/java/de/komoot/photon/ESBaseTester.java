@@ -36,8 +36,9 @@ public class ESBaseTester {
 
     private PhotonDoc createDoc(double lon, double lat, int id, int osmId, String key, String value) {
         ImmutableMap<String, String> nameMap = ImmutableMap.of("name", "berlin");
+        ImmutableMap<String, String> addressMap = ImmutableMap.of("city", "berlin");
         Point location = FACTORY.createPoint(new Coordinate(lon, lat));
-        return new PhotonDoc(id, "way", osmId, key, value, nameMap, null, null, null, null, 0, 0.5, null, location, 0, 0);
+        return new PhotonDoc(id, "way", osmId, key, value, nameMap, null, addressMap, null, null, 0, 0.5, null, location, 0, 0);
     }
 
     @Before
@@ -45,6 +46,7 @@ public class ESBaseTester {
         setUpES();
         ImmutableList<String> tags = ImmutableList.of("tourism", "attraction", "tourism", "hotel", "tourism", "museum", "tourism", "information", "amenity",
                 "parking", "amenity", "restaurant", "amenity", "information", "food", "information", "railway", "station");
+        ImmutableMap<String, String> cityNames = ImmutableMap.of("name:en", "berlin", "name", "berlin");
         client = getClient();
         Importer instance = new Importer(client, "en");
         double lon = 13.38886;
@@ -53,10 +55,12 @@ public class ESBaseTester {
             String key = tags.get(i);
             String value = tags.get(++i);
             PhotonDoc doc = this.createDoc(lon, lat, i, i, key, value);
+            doc.setCity(cityNames);
             instance.add(doc);
             lon += 0.00004;
             lat += 0.00086;
             doc = this.createDoc(lon, lat, i + 1, i + 1, key, value);
+            doc.setCity(cityNames);
             instance.add(doc);
             lon += 0.00004;
             lat += 0.00086;
@@ -76,7 +80,7 @@ public class ESBaseTester {
      * @throws IOException
      */
     public void setUpES() throws IOException {
-        server = new Server(clusterName, new File("./target/es_photon_test").getAbsolutePath(), "en", "").setMaxShards(1).start();
+        server = new Server(clusterName, new File("./target/es_photon_test").getAbsolutePath(), "en", "", false).setMaxShards(1).start();
         server.recreateIndex();
         refresh();
     }

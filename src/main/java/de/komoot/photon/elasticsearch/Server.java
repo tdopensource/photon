@@ -237,6 +237,8 @@ public class Server {
     private JSONObject addLangsToMapping(JSONObject mappingsObject) {
         // define collector json strings
         String copyToCollectorString = "{\"type\":\"text\",\"index\":false,\"copy_to\":[\"collector.{lang}\"]}";
+        String houseNumberCollectorString = "{\"type\":\"text\",\"index\":false,\"copy_to\":[\"collector.{lang}\", \"addresswithnumber.collector.{lang}\"]}";
+        String addressCollectorString = "{\"type\":\"text\",\"index\":false,\"fields\":{\"ngrams\":{\"type\":\"text\",\"analyzer\":\"index_ngram\"},\"raw\":{\"type\":\"text\",\"analyzer\":\"index_raw\"}},\"copy_to\":[\"collector.{lang}\", \"addresswithnumber.collector.{lang}\"]}";
         String nameToCollectorString = "{\"type\":\"text\",\"index\":false,\"fields\":{\"ngrams\":{\"type\":\"text\",\"analyzer\":\"index_ngram\"},\"raw\":{\"type\":\"text\",\"analyzer\":\"index_raw\"}},\"copy_to\":[\"collector.{lang}\"]}";
         String collectorString = "{\"type\":\"text\",\"index\":false,\"fields\":{\"ngrams\":{\"type\":\"text\",\"analyzer\":\"index_ngram\"},\"raw\":{\"type\":\"text\",\"analyzer\":\"index_raw\"}},\"copy_to\":[\"collector.{lang}\"]}}},\"street\":{\"type\":\"object\",\"properties\":{\"default\":{\"text\":false,\"type\":\"text\",\"copy_to\":[\"collector.default\"]}";
 
@@ -247,16 +249,19 @@ public class Server {
             for (String lang : languages) {
                 // create lang-specific json objects
                 JSONObject copyToCollectorObject = new JSONObject(copyToCollectorString.replace("{lang}", lang));
+                JSONObject houseNumberCollectorObject = new JSONObject(houseNumberCollectorString.replace("{lang}", lang));
+                JSONObject addressCollectorObject = new JSONObject(addressCollectorString.replace("{lang}", lang));
                 JSONObject nameToCollectorObject = new JSONObject(nameToCollectorString.replace("{lang}", lang));
                 JSONObject collectorObject = new JSONObject(collectorString.replace("{lang}", lang));
 
                 // add language specific tags to the collector
-                propertiesObject = addToCollector("city", propertiesObject, copyToCollectorObject, lang);
+                propertiesObject = addToCollector("city", propertiesObject, addressCollectorObject, lang);
                 propertiesObject = addToCollector("context", propertiesObject, copyToCollectorObject, lang);
                 propertiesObject = addToCollector("country", propertiesObject, copyToCollectorObject, lang);
                 propertiesObject = addToCollector("state", propertiesObject, copyToCollectorObject, lang);
-                propertiesObject = addToCollector("street", propertiesObject, copyToCollectorObject, lang);
-                propertiesObject = addToCollector("district", propertiesObject, copyToCollectorObject, lang);
+                propertiesObject = addToCollector("housenumber", propertiesObject, houseNumberCollectorObject, lang);
+                propertiesObject = addToCollector("street", propertiesObject, addressCollectorObject, lang);
+                propertiesObject = addToCollector("district", propertiesObject, addressCollectorObject, lang);
                 propertiesObject = addToCollector("locality", propertiesObject, copyToCollectorObject, lang);
                 propertiesObject = addToCollector("name", propertiesObject, nameToCollectorObject, lang);
 

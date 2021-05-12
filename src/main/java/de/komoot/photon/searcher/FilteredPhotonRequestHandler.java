@@ -27,7 +27,7 @@ public class FilteredPhotonRequestHandler extends AbstractPhotonRequestHandler<F
         Map<String, Set<String>> excludeTagValues = photonRequest.tagNotValues();
 
         return PhotonQueryBuilder.
-                builder(photonRequest.getQuery(), photonRequest.getLanguage()).
+                builder(photonRequest.getQuery(), photonRequest.getLanguage(), photonRequest.getQueryType()).
                 withTags(includeTags).
                 withKeys(includeKeys).
                 withValues(includeValues).

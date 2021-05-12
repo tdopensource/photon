@@ -10,7 +10,13 @@
 	</Appenders>
 	<Loggers>
 	    <Logger name="de.komoot.photon" level="info"/>
-		<Root level="warn">
+	    <Logger name="org.elasticsearch" level="info"/>
+	    <Logger name="org.elasticsearch.index" level="info"/>
+	    <Logger name="org.elasticsearch.indices" level="trace"/>
+	    <Logger name="org.elasticsearch.indices.IndexingMemoryController" level="info"/>
+		<!-- allows log json search requests -->
+<!--	    <Logger name="org.elasticsearch.tasks.TaskManager" level="trace"/>-->
+		<Root level="info">
 			<AppenderRef ref="ASYNC" />
 		</Root>
 	</Loggers>

@@ -14,7 +14,7 @@ public class SimplePhotonRequestHandler extends AbstractPhotonRequestHandler<Pho
 
     @Override
     public TagFilterQueryBuilder buildQuery(PhotonRequest photonRequest) {
-        return PhotonQueryBuilder.builder(photonRequest.getQuery(), photonRequest.getLanguage()).
+        return PhotonQueryBuilder.builder(photonRequest.getQuery(), photonRequest.getLanguage(), photonRequest.getQueryType()).
                 withLocationBias(photonRequest.getLocationForBias(), photonRequest.getScaleForBias()).
                 withBoundingBox(photonRequest.getBbox());
     }

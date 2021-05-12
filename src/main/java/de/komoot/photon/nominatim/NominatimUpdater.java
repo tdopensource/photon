@@ -176,8 +176,7 @@ public class NominatimUpdater {
 
     /**
      * Creates a new instance
-     * 
-     * @param host Nominatim database host
+     *  @param host Nominatim database host
      * @param port Nominatim database port
      * @param database Nominatim database name
      * @param username Nominatim database username

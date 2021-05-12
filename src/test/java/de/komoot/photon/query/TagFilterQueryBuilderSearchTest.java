@@ -31,7 +31,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     public void testFilterWithTagTourismAttraction() throws IOException {
         Client client = getClient();
         Set<String> valueSet = ImmutableSet.of("attraction");
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withTags(ImmutableMap.of("tourism", valueSet));
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withTags(ImmutableMap.of("tourism", valueSet));
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(2l));
@@ -45,7 +45,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     @Test
     public void testValueAttraction() throws IOException {
         Client client = getClient();
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withValues("attraction");
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withValues("attraction");
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(2l));
@@ -59,7 +59,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     @Test
     public void testKeyTourism() throws IOException {
         Client client = getClient();
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withKeys("tourism");
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withKeys("tourism");
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(8l));
@@ -74,7 +74,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     public void testFilterWithoutTagTourismAttraction() throws IOException {
         Client client = getClient();
         Set<String> valueSet = ImmutableSet.of("attraction");
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withoutTags(ImmutableMap.of("tourism", valueSet));
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withoutTags(ImmutableMap.of("tourism", valueSet));
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(16l));
@@ -88,7 +88,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     @Test
     public void testValueNotInformation() throws IOException {
         Client client = getClient();
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withoutValues("information");
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withoutValues("information");
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(12l));
@@ -102,7 +102,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     @Test
     public void testKeyNotTourism() throws IOException {
         Client client = getClient();
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withoutKeys("tourism");
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withoutKeys("tourism");
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(10l));
@@ -119,7 +119,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     @Test
     public void testKeyTourismAndValueNotInformation() throws IOException {
         Client client = getClient();
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withKeys("tourism").withoutValues("information");
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withKeys("tourism").withoutValues("information");
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(6l));
@@ -137,7 +137,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     public void testKeyTourismButValueNotInformation() throws IOException {
         Client client = getClient();
         Set<String> valueSet = ImmutableSet.of("information");
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withTagsNotValues(ImmutableMap.of("tourism", valueSet));
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withTagsNotValues(ImmutableMap.of("tourism", valueSet));
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(6l));
@@ -151,7 +151,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     @Test
     public void testKeyNotTourismAndKeyNotAmenity() throws IOException {
         Client client = getClient();
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withoutKeys("tourism", "amenity");
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withoutKeys("tourism", "amenity");
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(4l));
@@ -167,7 +167,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     @Test
     public void testKeyTourismAndKeyNotAmenity() throws IOException {
         Client client = getClient();
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withKeys("tourism").withoutKeys("amenity");
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withKeys("tourism").withoutKeys("amenity");
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(8l));
@@ -181,7 +181,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     @Test
     public void testValueInformationButKeyNotAmenity() throws IOException {
         Client client = getClient();
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withValues("information").withoutKeys("amenity");
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withValues("information").withoutKeys("amenity");
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(4l));
@@ -196,7 +196,7 @@ public class TagFilterQueryBuilderSearchTest extends ESBaseTester {
     public void testTagNotTourismAttraction() throws IOException {
         Client client = getClient();
         Set<String> attraction = ImmutableSet.of("attraction");
-        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en").withoutTags(ImmutableMap.of("tourism", attraction));
+        TagFilterQueryBuilder tagFilterQueryBuilder = PhotonQueryBuilder.builder("berlin", "en", QueryType.PLACES).withoutTags(ImmutableMap.of("tourism", attraction));
         QueryBuilder queryBuilder = tagFilterQueryBuilder.buildQuery();
         SearchResponse searchResponse = search(client, queryBuilder);
         assertThat(searchResponse.getHits().getTotalHits(), is(16l));

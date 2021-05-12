@@ -20,7 +20,7 @@ public class PhotonRequestFactory {
     private final BoundingBoxParamConverter bboxParamConverter;
 
     protected static HashSet<String> m_hsRequestQueryParams = new HashSet<>(Arrays.asList("lang", "q", "lon", "lat",
-            "limit", "osm_tag", "location_bias_scale", "bbox", "debug"));
+            "limit", "osm_tag", "location_bias_scale", "bbox", "debug", "type"));
 
     public PhotonRequestFactory(List<String> supportedLanguages, String defaultLanguage) {
         this.languageResolver = new RequestLanguageResolver(supportedLanguages, defaultLanguage);
@@ -38,6 +38,11 @@ public class PhotonRequestFactory {
 
         String query = webRequest.queryParams("q");
         if (query == null) throw new BadRequestException(400, "missing search term 'q': /?q=berlin");
+
+        String queryTypeStr = webRequest.queryParams("type");
+        QueryType queryType = QueryType.getOrNull(queryTypeStr != null ? queryTypeStr : "places");
+        if(queryType == null) throw new BadRequestException(400, "incorrect type parameter, available values: places, addresses");
+
         Integer limit;
         try {
             limit = Integer.valueOf(webRequest.queryParams("limit"));
@@ -60,9 +65,9 @@ public class PhotonRequestFactory {
 
         QueryParamsMap tagFiltersQueryMap = webRequest.queryMap("osm_tag");
         if (!new CheckIfFilteredRequest().execute(tagFiltersQueryMap)) {
-            return (R) new PhotonRequest(query, limit, bbox, locationForBias, scale, language);
+            return (R) new PhotonRequest(query, queryType, limit, bbox, locationForBias, scale, language);
         }
-        FilteredPhotonRequest photonRequest = new FilteredPhotonRequest(query, limit, bbox, locationForBias, scale, language);
+        FilteredPhotonRequest photonRequest = new FilteredPhotonRequest(query, queryType, limit, bbox, locationForBias, scale, language);
         String[] tagFilters = tagFiltersQueryMap.values();
         setUpTagFilters(photonRequest, tagFilters);
 

@@ -15,36 +15,72 @@
 					"de": {
 						"type": "text",
 						"index": false,
+						"fields": {
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						},
 						"copy_to": [
-							"collector.de"
+							"collector.de",
+							"addresswithnumber.de"
 						]
 					},
 					"default": {
 						"type": "text",
-						"index": false,
+						"index": true,
+						"fielddata": true,
+						"fields": {
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						},
 						"copy_to": [
-							"collector.default"
+							"collector.default",
+							"addresswithnumber.default"
 						]
 					},
 					"en": {
 						"type": "text",
 						"index": false,
+						"fields": {
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						},
 						"copy_to": [
-							"collector.en"
+							"collector.en",
+							"addresswithnumber.en"
 						]
 					},
 					"fr": {
 						"type": "text",
 						"index": false,
+						"fields": {
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						},
 						"copy_to": [
-							"collector.fr"
+							"collector.fr",
+							"addresswithnumber.fr"
 						]
 					},
 					"it": {
 						"type": "text",
 						"index": false,
+						"fields": {
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						},
 						"copy_to": [
-							"collector.it"
+							"collector.it",
+							"addresswithnumber.it"
 						]
 					}
 				}
@@ -225,18 +261,32 @@
 				"index": true,
 				"analyzer": "index_housenumber",
 				"search_analyzer": "standard",
+				"fields": {
+					"ngrams": {
+						"type": "text",
+						"analyzer": "index_ngram",
+						"search_analyzer": "search_ngram"
+					}
+				},
 				"copy_to": [
-					"collector.default"
+					"collector.default",
+					"addresswithnumber.default",
+					"addresswithnumber.pl",
+					"addresswithnumber.en"
 				]
 			},
 			"importance": {
 				"type": "float"
+			},
+			"osm_rank_address": {
+				"type": "integer"
 			},
 			"name": {
 				"properties": {
 					"alt": {
 						"type": "text",
 						"index": false,
+						"store": true,
 						"fields": {
 							"raw": {
 								"type": "text",
@@ -251,11 +301,6 @@
 						"type": "text",
 						"index": false,
 						"fields": {
-							"ngrams": {
-								"type": "text",
-								"analyzer": "index_ngram",
-								"search_analyzer": "search_ngram"
-							},
 							"raw": {
 								"type": "text",
 								"analyzer": "index_raw"
@@ -267,7 +312,8 @@
 					},
 					"default": {
 						"type": "text",
-						"index": false,
+						"index": true,
+						"fielddata": true,
 						"copy_to": [
 							"collector.default",
 							"name.en",
@@ -280,11 +326,6 @@
 						"type": "text",
 						"index": false,
 						"fields": {
-							"ngrams": {
-								"type": "text",
-								"analyzer": "index_ngram",
-								"search_analyzer": "search_ngram"
-							},
 							"raw": {
 								"type": "text",
 								"analyzer": "index_raw"
@@ -298,11 +339,6 @@
 						"type": "text",
 						"index": false,
 						"fields": {
-							"ngrams": {
-								"type": "text",
-								"analyzer": "index_ngram",
-								"search_analyzer": "search_ngram"
-							},
 							"raw": {
 								"type": "text",
 								"analyzer": "index_raw"
@@ -329,11 +365,6 @@
 						"type": "text",
 						"index": false,
 						"fields": {
-							"ngrams": {
-								"type": "text",
-								"analyzer": "index_ngram",
-								"search_analyzer": "search_ngram"
-							},
 							"raw": {
 								"type": "text",
 								"analyzer": "index_raw"
@@ -414,7 +445,7 @@
 			},
 			"object_type": {
 				"type": "text",
-				"index": false
+				"index": true
 			},
 			"postcode": {
 				"type": "text",
@@ -468,35 +499,40 @@
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.de"
+							"collector.de",
+							"addresswithnumber.de"
 						]
 					},
 					"default": {
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.default"
+							"collector.default",
+							"addresswithnumber.default"
 						]
 					},
 					"en": {
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.en"
+							"collector.en",
+							"addresswithnumber.en"
 						]
 					},
 					"fr": {
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.fr"
+							"collector.fr",
+							"addresswithnumber.fr"
 						]
 					},
 					"it": {
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.it"
+							"collector.it",
+							"addresswithnumber.it"
 						]
 					}
 				}
@@ -507,35 +543,40 @@
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.de"
+							"collector.de",
+							"addresswithnumber.de"
 						]
 					},
 					"default": {
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.default"
+							"collector.default",
+							"addresswithnumber.default"
 						]
 					},
 					"en": {
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.en"
+							"collector.en",
+							"addresswithnumber.en"
 						]
 					},
 					"fr": {
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.fr"
+							"collector.fr",
+							"addresswithnumber.fr"
 						]
 					},
 					"it": {
 						"type": "text",
 						"index": false,
 						"copy_to": [
-							"collector.it"
+							"collector.it",
+							"addresswithnumber.it"
 						]
 					}
 				}
@@ -615,6 +656,81 @@
 						"copy_to": [
 							"collector.it"
 						]
+					}
+				}
+			},
+			"addresswithnumber": {
+				"properties": {
+					"de": {
+						"type": "text",
+						"index": false,
+						"fields": {
+							"ngrams": {
+								"type": "text",
+								"analyzer": "index_ngram"
+							},
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						}
+					},
+					"default": {
+						"type": "text",
+						"store": true,
+						"index": false,
+						"fields": {
+							"ngrams": {
+								"type": "text",
+								"analyzer": "index_ngram"
+							},
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						}
+					},
+					"en": {
+						"type": "text",
+						"index": false,
+						"fields": {
+							"ngrams": {
+								"type": "text",
+								"analyzer": "index_ngram"
+							},
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						}
+					},
+					"fr": {
+						"type": "text",
+						"index": false,
+						"fields": {
+							"ngrams": {
+								"type": "text",
+								"analyzer": "index_ngram"
+							},
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						}
+					},
+					"it": {
+						"type": "text",
+						"index": false,
+						"fields": {
+							"ngrams": {
+								"type": "text",
+								"analyzer": "index_ngram"
+							},
+							"raw": {
+								"type": "text",
+								"analyzer": "index_raw"
+							}
+						}
 					}
 				}
 			}

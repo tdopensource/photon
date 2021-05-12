@@ -10,14 +10,16 @@ import java.io.Serializable;
  */
 public class PhotonRequest implements Serializable {
     private String query;
+    private final QueryType queryType;
     private Integer limit;
     private Point locationForBias;
     private String language;
     private final double scale;
     private Envelope bbox;
 
-    public PhotonRequest(String query, int limit, Envelope bbox, Point locationForBias, double scale, String language) {
+    public PhotonRequest(String query, QueryType queryType, int limit, Envelope bbox, Point locationForBias, double scale, String language) {
         this.query = query;
+        this.queryType = queryType;
         this.limit = limit;
         this.locationForBias = locationForBias;
         this.scale = scale;
@@ -27,6 +29,10 @@ public class PhotonRequest implements Serializable {
 
     public String getQuery() {
         return query;
+    }
+
+    public QueryType getQueryType() {
+        return queryType;
     }
 
     public Integer getLimit() {

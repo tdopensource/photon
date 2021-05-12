@@ -56,42 +56,84 @@ public class PhotonQueryBuilder implements TagFilterQueryBuilder {
 
     protected ArrayList<FilterFunctionBuilder> m_alFilterFunction4QueryBuilder = new ArrayList<>(1);
 
-    protected QueryBuilder m_query4QueryBuilder;
+    protected BoolQueryBuilder m_query4QueryBuilder;
 
 
-    private PhotonQueryBuilder(String query, String language) {
-        defaultMatchQueryBuilder =
-                QueryBuilders.matchQuery("collector.default", query).fuzziness(Fuzziness.ZERO).prefixLength(2).analyzer("search_ngram").minimumShouldMatch("100%");
+    private PhotonQueryBuilder(String query, String language, QueryType queryType) {
+        if (queryType.equals(QueryType.PLACES)) {
+            defaultMatchQueryBuilder =
+                    QueryBuilders.matchQuery("collector.default", query).fuzziness(Fuzziness.ZERO).prefixLength(2).analyzer("search_ngram").minimumShouldMatch("100%");
 
-        languageMatchQueryBuilder = QueryBuilders.matchQuery(String.format("collector.%s.ngrams", language), query).fuzziness(Fuzziness.ZERO).prefixLength(2)
-                .analyzer("search_ngram").minimumShouldMatch("100%");
+            languageMatchQueryBuilder = QueryBuilders.matchQuery(String.format("collector.%s.ngrams", language), query).fuzziness(Fuzziness.ZERO).prefixLength(2)
+                    .analyzer("search_ngram").minimumShouldMatch("100%");
 
-        // @formatter:off
-        m_query4QueryBuilder = QueryBuilders.boolQuery()
-                .must(QueryBuilders.boolQuery().should(defaultMatchQueryBuilder).should(languageMatchQueryBuilder)
-                        .minimumShouldMatch("1"))
-                .should(QueryBuilders.matchQuery(String.format("name.%s.raw", language), query).boost(200)
-                        .analyzer("search_raw"))
-                .should(QueryBuilders.matchQuery(String.format("collector.%s.raw", language), query).boost(100)
-                        .analyzer("search_raw"));
-        // @formatter:on
+            // @formatter:off
+            m_query4QueryBuilder = QueryBuilders.boolQuery()
+                    .must(QueryBuilders.boolQuery().should(defaultMatchQueryBuilder).should(languageMatchQueryBuilder)
+                            .minimumShouldMatch("1"));
+            m_query4QueryBuilder = m_query4QueryBuilder
+                    .should(QueryBuilders.matchQuery(String.format("name.%s.raw", language), query).boost(4).analyzer("search_raw"))
+                    .should(QueryBuilders.matchQuery("name.default.raw", query).boost(3).analyzer("search_raw"))
+                    .should(QueryBuilders.matchQuery(String.format("collector.%s.raw", language), query).boost(2).analyzer("search_raw"))
+                    .should(QueryBuilders.matchQuery("collector.default.raw", query).boost(1).analyzer("search_raw"));
+            // @formatter:on
 
-        // this is former general-score, now inline
-        String strCode = "double score = 1 + doc['importance'].value * 100; score";
-        ScriptScoreFunctionBuilder functionBuilder4QueryBuilder =
-                ScoreFunctionBuilders.scriptFunction(new Script(ScriptType.INLINE, "painless", strCode, new HashMap<String, Object>()));
+            // this is former general-score, now inline
+            String strCode = "double score = 1 + doc['importance'].value * 10; score";
+            ScriptScoreFunctionBuilder functionBuilder4QueryBuilder =
+                    ScoreFunctionBuilders.scriptFunction(new Script(ScriptType.INLINE, "painless", strCode, new HashMap<>()));
 
-        m_alFilterFunction4QueryBuilder.add(new FilterFunctionBuilder(functionBuilder4QueryBuilder));
+            m_alFilterFunction4QueryBuilder.add(new FilterFunctionBuilder(functionBuilder4QueryBuilder));
+            m_finalQueryWithoutTagFilterBuilder = new FunctionScoreQueryBuilder(m_query4QueryBuilder, m_alFilterFunction4QueryBuilder.toArray(new FilterFunctionBuilder[0]))
+                    .boostMode(CombineFunction.MULTIPLY).scoreMode(ScoreMode.MULTIPLY);
 
-        m_finalQueryWithoutTagFilterBuilder = new FunctionScoreQueryBuilder(m_query4QueryBuilder, m_alFilterFunction4QueryBuilder.toArray(new FilterFunctionBuilder[0]))
-                .boostMode(CombineFunction.MULTIPLY).scoreMode(ScoreMode.MULTIPLY);
+            // @formatter:off
+            m_queryBuilderForTopLevelFilter = QueryBuilders.boolQuery()
+                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("housenumber")))
+                    .should(QueryBuilders.matchQuery("housenumber", query).analyzer("standard"))
+                    .should(QueryBuilders.existsQuery("name.default"));
+            // @formatter:on
+        } else if(queryType.equals(QueryType.ADDRESSES)) {
+            defaultMatchQueryBuilder =
+                    QueryBuilders.matchQuery("addresswithnumber.default.ngrams", query)
+                            .operator(Operator.AND)
+                            .fuzziness(Fuzziness.ZERO)
+                            .prefixLength(2)
+                            .analyzer("search_ngram")
+                            .minimumShouldMatch("100%");
 
-        // @formatter:off
-        m_queryBuilderForTopLevelFilter = QueryBuilders.boolQuery()
-                .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("housenumber")))
-                .should(QueryBuilders.matchQuery("housenumber", query).analyzer("standard"))
-                .should(QueryBuilders.existsQuery(String.format("name.%s.raw", language)));
-        // @formatter:on
+            languageMatchQueryBuilder = QueryBuilders.matchQuery(String.format("addresswithnumber.%s.ngrams", language), query)
+                    .operator(Operator.AND)
+                    .fuzziness(Fuzziness.ZERO)
+                    .prefixLength(2)
+                    .analyzer("search_ngram")
+                    .minimumShouldMatch("100%");
+
+            m_query4QueryBuilder = QueryBuilders.boolQuery()
+                    .should(QueryBuilders.boolQuery().should(defaultMatchQueryBuilder).should(languageMatchQueryBuilder)
+                            .minimumShouldMatch("1"));
+
+            // this is former general-score, now inline
+            String strCode = "double score = 1 + doc['importance'].value * 10; score";
+            ScriptScoreFunctionBuilder functionBuilder4QueryBuilder =
+                    ScoreFunctionBuilders.scriptFunction(new Script(ScriptType.INLINE, "painless", strCode, new HashMap<String, Object>()));
+
+            m_alFilterFunction4QueryBuilder.add(new FilterFunctionBuilder(functionBuilder4QueryBuilder));
+            m_finalQueryWithoutTagFilterBuilder = new FunctionScoreQueryBuilder(m_query4QueryBuilder, m_alFilterFunction4QueryBuilder.toArray(new FilterFunctionBuilder[0]))
+                    .boostMode(CombineFunction.MULTIPLY).scoreMode(ScoreMode.MULTIPLY);
+
+            // @formatter:off
+            m_queryBuilderForTopLevelFilter = QueryBuilders.boolQuery()
+                    .should(QueryBuilders.matchQuery("housenumber", query).analyzer("standard"))
+                    .should(QueryBuilders.termQuery("object_type", "city"))
+                    .should(QueryBuilders.boolQuery()
+                                .must(QueryBuilders.termQuery( "osm_key", "highway"))
+                                .must(QueryBuilders.existsQuery("name.default"))
+                            )
+                    .must(QueryBuilders.existsQuery("city.default"));
+            // @formatter:on
+        }
+
 
         state = State.PLAIN;
     }
@@ -102,10 +144,11 @@ public class PhotonQueryBuilder implements TagFilterQueryBuilder {
      *
      * @param query    the value for photon query parameter "q"
      * @param language
+     * @param queryType
      * @return An initialized {@link TagFilterQueryBuilder photon query builder}.
      */
-    public static TagFilterQueryBuilder builder(String query, String language) {
-        return new PhotonQueryBuilder(query, language);
+    public static TagFilterQueryBuilder builder(String query, String language, QueryType queryType) {
+        return new PhotonQueryBuilder(query, language, queryType);
     }
 
     @Override
