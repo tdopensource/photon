@@ -12,7 +12,7 @@
 	    <Logger name="de.komoot.photon" level="info"/>
 	    <Logger name="org.elasticsearch" level="info"/>
 	    <Logger name="org.elasticsearch.index" level="info"/>
-	    <Logger name="org.elasticsearch.indices" level="trace"/>
+	    <Logger name="org.elasticsearch.indices" level="info"/>
 	    <Logger name="org.elasticsearch.indices.IndexingMemoryController" level="info"/>
 		<!-- allows log json search requests -->
 <!--	    <Logger name="org.elasticsearch.tasks.TaskManager" level="trace"/>-->

@@ -473,7 +473,7 @@ public class NominatimConnector {
                         doc.getContext().add(address.getName());
                     }
                 } else {
-                    log.info("City name, used " + doc.getCity() + " instead of " + address.getName());
+                    log.debug("City name, used " + doc.getCity() + " instead of " + address.getName());
                 }
                 continue;
             }
